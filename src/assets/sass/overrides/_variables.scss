@@ -1,0 +1,92 @@
+/* Add your variable customizations of layout here */
+$primaryColor: #55C494;
+$primaryLightColor: scale-color($primaryColor, $lightness: 60%) !default;
+$primaryDarkColor: scale-color($primaryColor, $lightness: -10%) !default;
+$primaryDarkerColor: scale-color($primaryColor, $lightness: -20%) !default;
+$primaryTextColor: #ffffff;
+
+$highlightBg: $primaryColor;
+$highlightTextColor: $primaryTextColor;
+
+$secondaryColor: #82CF2A;
+$tertiaryColor: #658390;
+
+$textColor: #192037;
+$textColor2: #888888;
+$textColor3: #78778B;
+$textColor4: #FFFFFF;
+
+$successColor: #15B476;
+$successColor2: #64E7AF;
+$successColor3: #EBFEF5;
+
+$warnColor: #F3950E;
+$warnColor2: #FCD147;
+$warnColor3: #FFFCE9;
+
+$errorColor: #E82835;
+$errorColor2: #F79799;
+$errorColor3: #FEF1EF;
+
+$grayColor: #FAFAFA;
+$grayColor2: #F8F8F8;
+$grayColor3: #F5F5F5;
+$grayColor4: #FDFDFD;
+$grayColor5: #F2F2F2;
+
+$darkColor: #201E34;
+$darkColor2: #282541;
+
+$darkBgColor: #1C1A2E;
+$darkShadeColor: #1C1A2E;
+$keyBlackColor: #1C1A2E;
+
+$profileFontColor: #83a5b7;
+
+$birthdayDatePickerBg: #fff;
+$birthdayDatePickerBorder: #83a5b7;
+$birthdayDatePickerButtonBg: rgba(232, 232, 232, 0.7);
+$birthdayDatePickerButtonBgDisabled: rgba(232, 232, 232, 0.1);
+
+:root {
+  --primaryColor: #55C494;
+  --secondaryColor: #82CF2A;
+  --tertiaryColor: #658390;
+
+  --textColor: #192037;
+  --textColor2: #888888;
+  --textColor3: #78778B;
+  --textColor4: #FFFFFF;
+
+  --successColor: #15B476;
+  --successColor2: #64E7AF;
+  --successColor3: #EBFEF5;
+
+  --warnColor: #F3950E;
+  --warnColor2: #FCD147;
+  --warnColor3: #FFFCE9;
+
+  --errorColor: #E82835;
+  --errorColor2: #F79799;
+  --errorColor3: #FEF1EF;
+
+  --grayColor: #FAFAFA;
+  --grayColor2: #F8F8F8;
+  --grayColor3: #F5F5F5;
+  --grayColor4: #FDFDFD;
+  --grayColor5: #F2F2F2;
+
+  --darkColor: #201E34;
+  --darkColor2: #282541;
+
+  --darkBgColor: #1C1A2E;
+  --darkShadeColor: #1C1A2E;
+  --keyBlackColor: #1C1A2E;
+
+  --profileFontColor: #83a5b7;
+
+  --birthdayDatePickerBg: #fff;
+  --birthdayDatePickerBorder: #83a5b7;
+  --birthdayDatePickerButtonBg: rgba(232, 232, 232, 0.7);
+  --birthdayDatePickerButtonBgDisabled: rgba(232, 232, 232, 0.1);
+}

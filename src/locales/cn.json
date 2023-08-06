@@ -1,0 +1,18 @@
+{
+  "language": {
+    "en": "English",
+    "cn": "中文",
+    "my": "Bahasa Melayu"
+  },
+  "User": "用户",
+  "Login": "登录",
+  "Logout": "登出",
+  "Label": "标签",
+  "Description": "描述",
+  "Type": "类型",
+  "Profile": "个人资料",
+  "Dashboard": "仪表盘",
+  "Home": "首页",
+  "Me": "我",
+  "Password": "密码"
+}

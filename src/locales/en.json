@@ -1,0 +1,18 @@
+{
+  "language": {
+    "en": "English",
+    "cn": "中文",
+    "my": "Bahasa Melayu"
+  },
+  "User": "User",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Label": "Label",
+  "Description": "Description",
+  "Type": "Type",
+  "Profile": "Profile",
+  "Dashboard": "Dashboard",
+  "Home": "Home",
+  "Me": "Me",
+  "Password": "Password"
+}
