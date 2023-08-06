@@ -3,9 +3,12 @@
   <div class="flex ">
     <div >
       <h2>商品：</h2>
-      <div class="flex m-1" v-for="(quantity, productIndex) of itemQuantities">
+      <div class="flex m-1" v-for="productIndex of Object.keys(itemQuantities)">
         <label class="w-full mr-2">{{ itemNames[productIndex]['code'] }} {{ itemNames[productIndex]['name'] }} : </label>
-        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem" @keyup="updateItemRemaining"/>
+        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem" @keyup="updateItemRemaining"
+               @focus="inputRef[productIndex].select();"
+               ref="inputRef"
+              @blur="testBlur(productIndex)"/>
       </div>
     </div>
     <Divider layout="vertical" />
@@ -22,8 +25,15 @@
 import {computed, ref, reactive, onMounted} from 'vue';
 import Divider from "primevue/divider";
 
+function testBlur(productIndex: number|string)
+{
+  if (typeof itemQuantities[productIndex] !== 'number')
+    itemQuantities[productIndex] = 0;
+}
+
 // 定義15種品項的名稱和數量
-const itemQuantities = reactive([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+const itemQuantities = reactive([0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    inputRef = ref([]),
     itemNames = ref([
       {code: 'A1', name: 'Taro Jingsa'},
       {code: 'A2', name: 'Green Ruby'},
@@ -51,14 +61,15 @@ const itemQuantities = reactive([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       {code: 'F8', name: 'Black Gold'},
       {code: 'F9', name: 'Fruity Blueberry'},
     ]),
-    boxCapacity4 = 4,
-    boxCapacity2 = 2,
+    boxCapacityOf4 = 4,
+    boxCapacityOf2 = 2,
     itemsRemaining = ref([]),
     boxes = ref([]),
-    boxCount4 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacity4)),
-    boxCount2 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacity2));
+    boxCount4 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacityOf4)),
+    boxCount2 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacityOf2));
 
 onMounted(() => {
+  console.log(remainingItems);
   itemsRemaining.value = [...itemQuantities];
   boxes.value = distribute();
 });
@@ -66,22 +77,48 @@ onMounted(() => {
 function updateItemRemaining()
 {
   itemsRemaining.value = [...itemQuantities];
+  itemsRemaining.value.forEach((element, index) => {
+    if (typeof element === 'string') {
+      itemsRemaining.value[index] = 0;
+    } else if (typeof element !== 'number' || element <= 0) {
+      itemsRemaining.value[index] = 0;
+    }
+  });
   boxes.value = distribute();
 }
 
 
+// 定義箱子的容量
+const boxCapacity1 = 4; // 裝4個產品的箱子
+const boxCapacity2 = 2; // 裝2個產品的箱子
+
+// 計算兩種箱子的數量
+const numOfBoxes1 = computed(() => Math.floor(itemQuantities.reduce((sum, quantity) => sum + quantity, 0) / boxCapacity1));
+const numOfBoxes2 = computed(() => Math.floor(itemQuantities.reduce((sum, quantity) => sum + quantity, 0) / boxCapacity2));
+
+const remainingItems = computed(() => {
+  const remaining: number[] = [];
+  for (let i = 0; i < itemQuantities.length; i++) {
+    const quantity = itemQuantities[i];
+    const numOfBoxesToUse = Math.min(numOfBoxes1.value, Math.floor(quantity / boxCapacity1));
+    const remainder = quantity - numOfBoxesToUse * boxCapacity1;
+    for (let j = 0; j < remainder; j++) {
+      remaining.push(i + 1); // 因為這里的索引對應品項1到品項15，所以要加1
+    }
+  }
+  return remaining;
+});
 
 function distribute()
 {
   const boxArray: number[][] = [];
   let totalItemsRemaining = itemsRemaining.value.reduce((sum, qty) => sum + qty, 0);
-  console.log(123);
 
   // 將商品分配到能裝下4個的箱子
   for (let i = 0; i < boxCount4.value; i++) {
     const boxItems: number[] = [];
     for (let j = 0; j < itemQuantities.length; j++) {
-      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacity4) {
+      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacityOf4) {
         boxItems.push(j);
         itemsRemaining.value[j]--;
         totalItemsRemaining--;
@@ -94,7 +131,7 @@ function distribute()
   for (let i = 0; i < boxCount2.value; i++) {
     const boxItems: number[] = [];
     for (let j = 0; j < itemQuantities.length; j++) {
-      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacity2) {
+      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacityOf2) {
         boxItems.push(j);
         itemsRemaining.value[j]--;
         totalItemsRemaining--;
