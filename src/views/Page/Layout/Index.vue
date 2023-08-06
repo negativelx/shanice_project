@@ -1,11 +1,11 @@
 <template>
   <div class="select-none" :class="layoutContainerClass" @click="onDocumentClick">
     <div class="layout-main" v-if="!route.meta['emptyLayout']">
-      <TopBar
-        :colorScheme="props.colorScheme"
-        :topBarMenuActive="topBarMenuActive"
-        @topbar-item-click="onTopBarItemClick"
-      />
+<!--      <TopBar-->
+<!--        :colorScheme="props.colorScheme"-->
+<!--        :topBarMenuActive="topBarMenuActive"-->
+<!--        @topbar-item-click="onTopBarItemClick"-->
+<!--      />-->
       <div class="layout-main-content md:mb-1 select-none" :class="{'mb-8': !route.meta['emptyFooter']}">
         <RouterView />
       </div>
