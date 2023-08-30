@@ -5,17 +5,19 @@
       <h2>商品：</h2>
       <div class="flex m-1" v-for="productIndex of Object.keys(itemQuantities)">
         <label class="w-full mr-2">{{ itemNames[productIndex]['code'] }} {{ itemNames[productIndex]['name'] }} : </label>
-        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem" @keyup="updateItemRemaining"
+        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem"
                @focus="inputRef[productIndex].select();"
                ref="inputRef"
+               @keyup.enter="initial"
               @blur="testBlur(productIndex)"/>
       </div>
+<!--      <Button @click="initial">Distribute</Button>-->
     </div>
     <Divider layout="vertical" />
     <div class="ml-4">
       <h2>商品分配結果：</h2>
       <div v-for="(box, index) in boxes" :key="index">
-        箱子 {{ index + 1 }} = {{ getBoxItemsNames(box).join(', ') }}
+        Box {{ index + 1 }} = {{ getBoxItemsNames(box).join(', ') }}
       </div>
     </div>
   </div>
@@ -32,10 +34,10 @@ function testBlur(productIndex: number|string)
 }
 
 // 定義15種品項的名稱和數量
-const itemQuantities = reactive([0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+const itemQuantities = reactive([0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
     inputRef = ref([]),
     itemNames = ref([
-      {code: 'A1', name: 'Taro Jingsa'},
+      // {code: 'A1', name: 'Taro Jingsa'},
       {code: 'A2', name: 'Green Ruby'},
       {code: 'A3', name: 'Tiramisu'},
       {code: 'A4', name: 'Taro Single Yolk'},
@@ -61,126 +63,92 @@ const itemQuantities = reactive([0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       {code: 'F8', name: 'Black Gold'},
       {code: 'F9', name: 'Fruity Blueberry'},
     ]),
+    withYolk = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2']),
+    newFlavour = ref(['A2', 'A3', 'A4']),
+    pandanFlavour = ref(['E1', 'E2']),
+    mixedNutFlavour = ref(['C1', 'D1']),
     boxCapacityOf4 = 4,
     boxCapacityOf2 = 2,
-    itemsRemaining = ref([]),
-    boxes = ref([]),
-    boxCount4 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacityOf4)),
-    boxCount2 = computed(() => Math.floor(itemQuantities.reduce((sum, qty) => sum + qty, 0) / boxCapacityOf2));
+    itemsRemaining = ref<Array<any>>([]),
+    boxes = ref<Array<any>>([]),
+    totalItems = computed(() => itemQuantities.reduce((sum, qty) => sum + qty, 0));
 
 onMounted(() => {
-  console.log(remainingItems);
-  itemsRemaining.value = [...itemQuantities];
-  boxes.value = distribute();
+  initial();
 });
 
-function updateItemRemaining()
+function initial()
 {
-  itemsRemaining.value = [...itemQuantities];
-  itemsRemaining.value.forEach((element, index) => {
-    if (typeof element === 'string') {
-      itemsRemaining.value[index] = 0;
-    } else if (typeof element !== 'number' || element <= 0) {
-      itemsRemaining.value[index] = 0;
-    }
-  });
-  boxes.value = distribute();
-}
-
-
-// 定義箱子的容量
-const boxCapacity1 = 4; // 裝4個產品的箱子
-const boxCapacity2 = 2; // 裝2個產品的箱子
-
-// 計算兩種箱子的數量
-const numOfBoxes1 = computed(() => Math.floor(itemQuantities.reduce((sum, quantity) => sum + quantity, 0) / boxCapacity1));
-const numOfBoxes2 = computed(() => Math.floor(itemQuantities.reduce((sum, quantity) => sum + quantity, 0) / boxCapacity2));
-
-const remainingItems = computed(() => {
-  const remaining: number[] = [];
-  for (let i = 0; i < itemQuantities.length; i++) {
-    const quantity = itemQuantities[i];
-    const numOfBoxesToUse = Math.min(numOfBoxes1.value, Math.floor(quantity / boxCapacity1));
-    const remainder = quantity - numOfBoxesToUse * boxCapacity1;
-    for (let j = 0; j < remainder; j++) {
-      remaining.push(i + 1); // 因為這里的索引對應品項1到品項15，所以要加1
-    }
+  boxes.value = [];
+  if (totalItems.value <= 2)
+  {
+    itemQuantities.forEach((element, index) => {
+      if (element > 0)
+      {
+        for(let i = 0; i < element; i++)
+        {
+          if (boxes.value.length === 0) {
+            boxes.value.push([]);
+          }
+          boxes.value.forEach((box, boxIndex) => {
+            if (box.length < boxCapacityOf2)
+            {
+              boxes.value[boxIndex].push(index);
+            }
+          });
+        }
+      }
+    });
   }
-  return remaining;
-});
+  else if (totalItems.value <= 4)
+  {
+    itemQuantities.forEach((element, index) => {
+      if (element > 0)
+      {
+        for(let i = 0; i < element; i++)
+        {
+          if (boxes.value.length === 0) {
+            boxes.value.push([]);
+          }
+          boxes.value.forEach((box, boxIndex) => {
+            if (box.length < boxCapacityOf4)
+            {
+              boxes.value[boxIndex].push(index);
+            }
+          });
+        }
+      }
+    });
+  }else{
+    itemsRemaining.value = [...itemQuantities];
+    boxes.value = distribute();
+  }
+}
 
 function distribute()
 {
-  const boxArray: number[][] = [];
-  let totalItemsRemaining = itemsRemaining.value.reduce((sum, qty) => sum + qty, 0);
-
-  // 將商品分配到能裝下4個的箱子
-  for (let i = 0; i < boxCount4.value; i++) {
-    const boxItems: number[] = [];
-    for (let j = 0; j < itemQuantities.length; j++) {
-      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacityOf4) {
-        boxItems.push(j);
-        itemsRemaining.value[j]--;
-        totalItemsRemaining--;
+  let boxArray: Array<any> = [], current = 0, itemToDistribute = [...itemQuantities];
+  do{
+    if (boxArray[current] === undefined)
+      boxArray[current] = [];
+    for (let j = 0; j < itemToDistribute.length; j++) {
+      if (itemToDistribute[j] > 0 && boxArray[current].length < boxCapacityOf4) {
+        boxArray[current].push(j);
+        itemToDistribute[j]--;
       }
     }
-    boxArray.push(boxItems);
-  }
-
-  // 將商品分配到能裝下2個的箱子
-  for (let i = 0; i < boxCount2.value; i++) {
-    const boxItems: number[] = [];
-    for (let j = 0; j < itemQuantities.length; j++) {
-      if (itemsRemaining.value[j] > 0 && boxItems.length < boxCapacityOf2) {
-        boxItems.push(j);
-        itemsRemaining.value[j]--;
-        totalItemsRemaining--;
-      }
+    if (boxArray[current].length >= boxCapacityOf4) {
+      boxArray[current].sort();
+      current++;
     }
-    boxArray.push(boxItems);
-  }
+  }while(itemToDistribute.reduce((itemQuantities, val) => itemQuantities + val) > 0)
 
-  // 如果仍有餘數，則將餘數加入最後一個箱子
-  if (totalItemsRemaining > 0) {
-    const remainderBox: number[] = [];
-    for (let i = 0; i < itemQuantities.length; i++) {
-      while (itemsRemaining.value[i] > 0) {
-        remainderBox.push(i);
-        itemsRemaining.value[i]--;
-        totalItemsRemaining--;
-      }
-    }
-    boxArray.push(remainderBox);
-  }
   return boxArray;
 }
 
-// 餘數
-const remainder = computed(() => {
-  const remainingItems: number[] = [];
-  for (let i = 0; i < itemQuantities.length; i++) {
-    for (let j = 0; j < itemsRemaining.value[i]; j++) {
-      remainingItems.push(i);
-    }
-  }
-  return remainingItems;
-});
-
 // 根據箱子中的商品索引，返回商品的名稱
 const getBoxItemsNames = (box: number[]) => box.map((itemIndex) => itemNames.value[itemIndex]['code']);
-const getRemainingItemsNames = computed(() => remainder.value.map((itemIndex) => itemNames.value[itemIndex]['code']));
 
-function formatItems() {
-}
-
-const param = computed(() => {
-  const formattedItems = {};
-  for (let i = 0; i < itemNames.value.length; i++) {
-    const {code, name} = itemNames.value[i];
-    formattedItems[code] = itemQuantities[i];
-  }
-  return formattedItems;
-});
 </script>
 
 
