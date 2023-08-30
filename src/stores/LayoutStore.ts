@@ -29,7 +29,7 @@ export const useLayoutStore = defineStore("layout", () => {
             else
                 return "wellous";
         }),
-        homeRouteData = ref({ name: "Member/Home" }),
+        homeRouteData = ref({ name: "Public/ProductDistribution" }),
         homeRoute = computed({
             get() {
                 return homeRouteData.value;

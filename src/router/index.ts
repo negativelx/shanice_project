@@ -2,8 +2,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { DefaultRoute } from "@/router/Modules/Default";
 import { getAppEnvConfig } from "@/service/Env";
 import Emitter from "@/service/Emitter";
-import Utilities from "@/service/Utilities";
-import { useLayoutStore } from "@/stores/LayoutStore";
 
 const modules = import.meta.globEager("./Modules/**/*.ts"), routeModuleList: RouteRecordRaw[] = [];
 Object.keys(modules).forEach((key) => {
@@ -28,14 +26,6 @@ router.beforeEach((to, _from, next) => {
     else if (appEnv.COMING_SOON && to.name !== "Misc/ComingSoon")
         next({ name: "Misc/ComingSoon" });
     next()
-});
-
-router.afterEach((to) => {
-    Emitter.emit("gtag:track", "config", appEnv.GTAG_ID, {
-        page_path: to.fullPath,
-        app_name: `${Utilities.ucFirst(useLayoutStore().platform)} Membership`,
-        send_page_view: true
-    });
 });
 
 router.isReady().then(() => {

@@ -1,7 +1,6 @@
 <template>
-    <div class="block-content">
-        <transition @enter="onEnter" @after-enter="onAfterEnter" @before-leave="onBeforeLeave" @leave="onLeave"
-                    :ref="contentRef" mode="out-in">
+    <div class="block-content"  ref="contentRef">
+        <transition @enter="onEnter" @after-enter="onAfterEnter" @before-leave="onBeforeLeave" @leave="onLeave" mode="out-in">
             <p v-if="!isExpanded" class="block-content__preview mb-0 w-full" v-html="contentHtml" />
             <p
                 v-else
@@ -105,7 +104,10 @@ function linkify(inputText) {
 
     //Change email addresses to mailto:: links.
     replacePattern3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
-    replacedText = replacedText.replace(replacePattern3, (match, p1) => `<a href="${appConfig.API_URL}member/post/link?refUrl=${encodeURIComponent("mailto:" + p1)}" target="_blank">${p1}</a>`);
+    replacedText = replacedText.replace(replacePattern3, (match, p1) => {
+      console.log(match);
+      `<a href="${appConfig.API_URL}member/post/link?refUrl=${encodeURIComponent("mailto:" + p1)}" target="_blank">${p1}</a>`
+    });
 
     // Change hashtags into links
     // Hide first as per request from JJ

@@ -14,12 +14,11 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
 import router from "@/router";
-import {useRoute} from "vue-router";
 import IllustrationComingSoon from '@/views/Components/Svg/Illustration/ComingSoon.vue';
 import LangSwitch from "@/views/Components/LangSwitch.vue";
 import Emitter from "@/service/Emitter";
 
-const {t} = useI18n(), route = useRoute();
+const {t} = useI18n();
 
 function refresh() {
     Emitter.emit("interactive:loading", true);
