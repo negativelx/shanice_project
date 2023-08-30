@@ -1,5 +1,5 @@
 <template>
-    <svg :class="props.class" :style="props.style" width="408" height="309" viewBox="0 0 408 309" fill="none"
+    <svg :class="props.class" width="408" height="309" viewBox="0 0 408 309" fill="none"
          xmlns="http://www.w3.org/2000/svg">
         <path d="M226.152 168.799L159.959 171.902L38.2207 308.5L226.152 168.799Z" fill="#B0B7BC"/>
         <path d="M226.152 168.799L38.2207 308.5L253.876 243.131L272.29 200.863L233.531 201.304L226.152 168.799Z"

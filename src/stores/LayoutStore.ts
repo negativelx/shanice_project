@@ -32,7 +32,7 @@ export const useLayoutStore = defineStore("layout", () => {
         homeRouteData = ref({ name: "Member/Home" }),
         homeRoute = computed({
             get() {
-                return useMemberStore().isLogin ? homeRouteData.value : { name: "Auth/Home" };
+                return homeRouteData.value;
             },
             set(value) {
                 if (value)

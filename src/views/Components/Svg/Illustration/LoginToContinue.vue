@@ -1,5 +1,5 @@
 <template>
-    <svg :class="props.class" :style="props.style" width="591" height="309" viewBox="0 0 591 309" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg :class="props.class" width="591" height="309" viewBox="0 0 591 309" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_4466_77549)">
             <path d="M295.41 309C458.56 309 590.819 303.556 590.819 296.84C590.819 290.125 458.56 284.681 295.41 284.681C132.259 284.681 0 290.125 0 296.84C0 303.556 132.259 309 295.41 309Z"
                   fill="#B0B7BC"/>

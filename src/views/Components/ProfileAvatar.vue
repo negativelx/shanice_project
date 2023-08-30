@@ -22,8 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { useMemberStore } from "@/stores/Member/Member";
+import { ref } from "vue";
 
 interface AvatarProps {
     class?: string,
@@ -38,30 +37,7 @@ const props = withDefaults(defineProps<AvatarProps>(), {
         src: "",
         style: ""
     }),
-    defaultAvatar = ref(true), src = ref(""),
-    memberStore = useMemberStore();
+    defaultAvatar = ref(true), src = ref("");
 
-watch(() => memberStore.member.avatar_ver, () => {
-    if (Number(memberStore.member.avatar_ver) > 0)
-        retrieveAvatar();
-});
 
-function retrieveAvatar() {
-    fetch(memberStore.member.avatar)
-        .then(response => {
-            if (response.ok && (response.headers.get("Content-Type") ?? "").startsWith("image/"))
-                return response.blob();
-            throw new Error("Network response was not ok");
-        })
-        .then(blob => {
-            src.value = URL.createObjectURL(blob);
-            defaultAvatar.value = false;
-        })
-        .catch(() => {
-            defaultAvatar.value = true;
-        });
-}
-
-if (Number(memberStore.member.avatar_ver) > 0)
-    retrieveAvatar();
 </script>

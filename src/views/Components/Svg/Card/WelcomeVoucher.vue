@@ -71,12 +71,5 @@ const props = withDefaults(defineProps<IconColorProps>(), {
         premium: '#399d89',
         vip: '#37a54a',
         vvip: '#ffae5c',
-    }),
-    words = reactive({
-        basic: 'STANDARD',
-        pro: 'PRO',
-        premium: 'PREMIUM',
-        vip: 'VIP',
-        vvip: 'VVIP',
     });
 </script>

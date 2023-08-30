@@ -1,7 +1,7 @@
 <template>
     <div class="block-content">
         <transition @enter="onEnter" @after-enter="onAfterEnter" @before-leave="onBeforeLeave" @leave="onLeave"
-                    ref="contentRef" mode="out-in">
+                    :ref="contentRef" mode="out-in">
             <p v-if="!isExpanded" class="block-content__preview mb-0 w-full" v-html="contentHtml" />
             <p
                 v-else
@@ -90,6 +90,7 @@ function linkify(inputText) {
     //URLs starting with http://, https://, or ftp://
     replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
     replacedText = inputText.replace(replacePattern1, (match, url) => {
+      console.log(match);
         const isOwn = isOwnUrl(url);
         return (isOwn) ? `<a href="${url}" target="_self">${url}</a>` : `<a href="${appConfig.API_URL}member/post/link?refUrl=${encodeURIComponent(url)}" target="_blank">${url}</a>`;
     });
@@ -97,6 +98,7 @@ function linkify(inputText) {
     //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
     replacePattern2 = /(^|[^\/a-z])(www\.[\S]+(\b|$))/gim;
     replacedText = replacedText.replace(replacePattern2, (match, p1, p2) => {
+      console.log(match, p1);
         const url = `${location.protocol}://${p2}`, isOwn = isOwnUrl(url);
         return (isOwn) ? `<a href="${url}" target="_self">${url}</a>` : `<a href="${appConfig.API_URL}member/post/link?refUrl=${encodeURIComponent(url)}" target="_blank">${url}</a>`;
     });

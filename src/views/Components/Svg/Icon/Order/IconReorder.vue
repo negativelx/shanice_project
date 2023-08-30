@@ -9,7 +9,7 @@ interface IconReorder {
   class?: string;
 }
 
-const props = withDefaults(defineProps<IconReorder>(), {
+withDefaults(defineProps<IconReorder>(), {
   class: "",
 });
 </script>

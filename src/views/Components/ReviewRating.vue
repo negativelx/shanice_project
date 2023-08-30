@@ -33,7 +33,6 @@
 }
 </style>
 <script setup lang="ts">
-import {useI18n} from "vue-i18n";
 import {ref} from "vue";
 import Rating from "primevue/rating";
 
@@ -43,7 +42,6 @@ const props = defineProps({
         required: true,
       }
     }),
-    {t} = useI18n(),
     rateGiven = ref(0),
     emit = defineEmits(["give-rating"]);
 

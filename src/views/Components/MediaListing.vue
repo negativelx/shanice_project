@@ -6,8 +6,8 @@
            :style="{inset: listingSize[1][0]}" >
         <img v-if="mediaDetails[0] && mediaDetails[0]['type'] === 'image'"
              :class="mediaDetails[0]['orientation'] === 'landscape' ? 'w-auto h-full' : 'w-full h-full'"
-             :src="media?.[0]" alt=""  />
-        <video v-if="mediaDetails[0] && mediaDetails[0]['type'] === 'video'" :src="media?.[0]" />
+             :src="String(media?.[0])" alt=""  />
+        <video v-if="mediaDetails[0] && mediaDetails[0]['type'] === 'video'" :src="String(media?.[0])" />
       </div>
     </template>
     <template v-if="media?.length === 2">
@@ -16,8 +16,8 @@
            :style="{inset: listingSize[2][index]}" >
         <img v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'image'"
              :class="mediaDetails[index]['orientation'] === 'landscape' ? 'w-auto h-full' : 'w-full h-full'"
-             :src="media?.[index]" alt=""  />
-        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="media?.[index]" />
+             :src="String(media?.[index])" alt=""  />
+        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="String(media?.[index])" />
       </div>
     </template>
     <template v-if="media?.length === 3">
@@ -26,8 +26,8 @@
            :style="{inset: listingSize[3][index]}" >
         <img v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'image'"
              :class="mediaDetails[index]['orientation'] === 'landscape' ? 'w-auto h-full' : 'w-full h-full'"
-             :src="media?.[index]" alt=""  />
-        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="media?.[index]" />
+             :src="String(media?.[index])" alt=""  />
+        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="String(media?.[index])" />
       </div>
     </template>
     <template v-if="media?.length === 4">
@@ -36,8 +36,8 @@
            :style="{inset: listingSize[4][index]}" >
         <img v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'image'"
              :class="mediaDetails[index]['orientation'] === 'landscape' ? 'w-auto h-full' : 'w-full h-full'"
-             :src="media?.[index]" alt=""  />
-        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="media?.[index]" />
+             :src="String(media?.[index])" alt=""  />
+        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="String(media?.[index])" />
       </div>
     </template>
     <template v-if="media?.length > 4">
@@ -46,8 +46,8 @@
            :style="{inset: listingSize[5][index]}" >
         <img v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'image'"
              :class="mediaDetails[index]['orientation'] === 'landscape' ? 'w-auto h-full' : 'w-full h-full'"
-             :src="media?.[index]" alt=""  />
-        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="media?.[index]" />
+             :src="String(media?.[index])" alt=""  />
+        <video v-if="mediaDetails[index] && mediaDetails[index]['type'] === 'video'" :src="String(media?.[index])" />
         <div class="blur-img media-overlay" v-if="index === 4 && media?.length > 5">
           <span class="font-bold text-5xl sm:text-7xl">+{{media?.length - 4}}</span>
         </div>
@@ -59,11 +59,11 @@
               :showItemNavigators="true" :showThumbnails="false"
                :numVisible="5">
       <div class="card w-10rem h-10rem"></div>
-      <template #item="slotProps">
+      <template #item>
         <div class="flex justify-content-center w-fit align-items-center" style="height: 100vh; inset: 0;">
           <img v-if="mediaDetails[selectedMedia] && mediaDetails[selectedMedia]['type'] === 'image'"
                class="w-full h-full"
-               :src="media?.[selectedMedia]" alt=""  />
+               :src="String(media?.[selectedMedia])" alt=""  />
 
           <video class="w-full h-full" controls v-if="mediaDetails[selectedMedia] && mediaDetails[selectedMedia]['type'] === 'video'">
             <source :src="media?.[selectedMedia]  + '?autoplay=0'" :type="mediaDetails[selectedMedia]['mime']">
@@ -76,13 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import {useI18n} from "vue-i18n";
 import {onMounted, reactive, ref} from "vue";
 import Emitter from "@/service/Emitter";
 import Galleria from "primevue/galleria";
 
-const { t } = useI18n(),
-    mediaListingRef = ref<HTMLElement>(),
+const mediaListingRef = ref<HTMLElement>(),
     listingSize = reactive({
       1: {
         0: '0 0 0 0',

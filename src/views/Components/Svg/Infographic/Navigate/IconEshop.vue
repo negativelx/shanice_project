@@ -11,7 +11,7 @@ interface IconColorProps {
   color?: string
 }
 
-const props = withDefaults(defineProps<IconColorProps>(), {
+withDefaults(defineProps<IconColorProps>(), {
   color: "#8CC541",
   class: ""
 });

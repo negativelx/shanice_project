@@ -10,7 +10,7 @@ interface IconVerify {
   class?: string;
 }
 
-const props = withDefaults(defineProps<IconVerify>(), {
+withDefaults(defineProps<IconVerify>(), {
   class: "",
 });
 </script>

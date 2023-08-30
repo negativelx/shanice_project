@@ -33,7 +33,6 @@ import Emitter from "@/service/Emitter";
 import { useRoute } from "vue-router";
 
 const
-    liveChat = ref(false),
     topBarMenuActive = ref(false),
     topBarItemClick = ref(false),
     staticMenuMobileActive = ref(false),

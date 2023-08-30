@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
 import {useI18n} from "vue-i18n";
 import router from "@/router";
 import {useRoute} from "vue-router";
@@ -20,7 +19,7 @@ import IllustrationComingSoon from '@/views/Components/Svg/Illustration/ComingSo
 import LangSwitch from "@/views/Components/LangSwitch.vue";
 import Emitter from "@/service/Emitter";
 
-const {t} = useI18n(), route = useRoute(), showBack = ref(route.meta.showBack ?? false);
+const {t} = useI18n(), route = useRoute();
 
 function refresh() {
     Emitter.emit("interactive:loading", true);

@@ -24,7 +24,6 @@
       "WebWorker"
     ],
     "types": [
-      "vite-plugin-pwa/client",
       "vite/client",
       "node"
     ],

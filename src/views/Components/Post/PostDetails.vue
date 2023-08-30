@@ -96,7 +96,6 @@
                 </div>
             </ScrollPanel>
         </div>
-        <LoginRequiredFooter v-if="!useMemberStore().isLogin" />
     </Dialog>
 </template>
 
@@ -112,8 +111,6 @@ import Avatar from "@/views/Components/Avatar.vue";
 import ScrollPanel from "primevue/scrollpanel";
 import PostMediaComposition from "@/views/Components/Post/PostMediaComposition.vue";
 import IconBack from "@/views/Components/Svg/Icon/IconBack.vue";
-import { useMemberStore } from "@/stores/Member/Member";
-import LoginRequiredFooter from "@/views/Components/LoginRequiredFooter.vue";
 import PostHashtag from "@/views/Components/Post/PostHashtag.vue";
 
 const { t } = useI18n(),

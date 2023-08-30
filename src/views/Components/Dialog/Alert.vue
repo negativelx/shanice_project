@@ -24,7 +24,6 @@ import { ref } from "vue";
 
 const { t } = useI18n(),
     emit = defineEmits(["submit-ok"]),
-    show = ref(false),
     okText = ref(<string>t("Ok")),
     props = defineProps({
         breakpoints: {

@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import router from "@/router";
 
-const props = defineProps({
+defineProps({
     postDetails: {
         type: Object,
         required: true,

@@ -58,7 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import {reactive} from "vue";
 
 interface IconColorProps {
     class?: string,
@@ -73,19 +72,5 @@ const props = withDefaults(defineProps<IconColorProps>(), {
         class: "",
         holder: "",
         since: ""
-    }),
-    colors = reactive({
-        basic: '#c5e58c',
-        pro: '#81d8a9',
-        premium: '#399d89',
-        vip: '#37a54a',
-        vvip: '#ffae5c',
-    }),
-    words = reactive({
-        basic: 'STANDARD',
-        pro: 'PRO',
-        premium: 'PREMIUM',
-        vip: 'VIP',
-        vvip: 'VVIP',
     });
 </script>
