@@ -100,9 +100,9 @@ export default defineConfig({
       manifest: {
         id: "/",
         start_url: "./index.html?source=pwa",
-        name: "Wellous Membership App",
-        short_name: "Wellous Membership",
-        description: "App for Wellous Membership",
+        name: "Project CSL",
+        short_name: "Project CSL",
+        description: "Project CSL",
         background_color: "#3BB34A",
         theme_color: "#3BB34A",
         display: "fullscreen",

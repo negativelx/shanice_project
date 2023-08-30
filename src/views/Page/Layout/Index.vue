@@ -18,6 +18,8 @@
         @topbar-item-click="onTopBarItemClick"
       />
       <RouterView />
+
+
     </div>
   </div>
   <DynamicDialog />

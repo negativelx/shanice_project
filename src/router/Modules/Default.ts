@@ -50,6 +50,14 @@ export const DefaultRoute: Array<RouteRecordRaw> = [
         component: () => import("@/views/Page/Misc/Pnc.vue")
     },
     {
+        path: "/product-distribution",
+        name: "Public/ProductDistribution",
+        meta: {
+            isLogoMiddle: true
+        },
+        component: () => import("@/views/Page/Public/ProductDistribution.vue")
+    },
+    {
         path: "/:catchAll(.*)", // 匹配任何未定义的路由
         redirect: "/"
     }

@@ -1,6 +1,6 @@
 import {EnvTypes, ObjectWithType} from "@/types";
 
-const appName: string = 'WELLOUS_MEMBERSHIP',
+const appName: string = 'PROJECT_CSL',
     appVersion: string = '1.0.28';
 
 export function getAppEnvConfig(): EnvTypes {
@@ -19,7 +19,6 @@ export function getAppEnvConfig(): EnvTypes {
 }
 
 export function isByPassRoute(name: string): boolean {
-    console.log(name);
     const byPassRoute: string[] = [
         "Index",
 

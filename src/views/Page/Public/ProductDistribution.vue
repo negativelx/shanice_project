@@ -1,21 +1,23 @@
 <template>
-  <h1>Shanice Super Fat Product Distribution System</h1>
+  <h1>Moon Cake Distribution System</h1>
   <div class="flex ">
     <div >
-      <h2>商品：</h2>
+      <h2>Product Input：</h2>
       <div class="flex m-1" v-for="productIndex of Object.keys(itemQuantities)">
-        <label class="w-full mr-2">{{ itemNames[productIndex]['code'] }} {{ itemNames[productIndex]['name'] }} : </label>
+        <label class="w-full mr-2"><span class="font-bold">{{ itemNames[productIndex]['code'] }}</span> - {{ itemNames[productIndex]['name'] }} : </label>
         <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem"
                @focus="inputRef[productIndex].select();"
                ref="inputRef"
                @keyup.enter="initial"
               @blur="testBlur(productIndex)"/>
       </div>
-<!--      <Button @click="initial">Distribute</Button>-->
+      <div class="flex justify-content-end mt-4">
+        <Button @click="initial">Distribute</Button>
+      </div>
     </div>
     <Divider layout="vertical" />
     <div class="ml-4">
-      <h2>商品分配結果：</h2>
+      <h2>Distribute Result：</h2>
       <div v-for="(box, index) in boxes" :key="index">
         Box {{ index + 1 }} = {{ getBoxItemsNames(box).join(', ') }}
       </div>
@@ -26,6 +28,7 @@
 <script setup lang="ts">
 import {computed, ref, reactive, onMounted} from 'vue';
 import Divider from "primevue/divider";
+import Button from "primevue/button";
 
 function testBlur(productIndex: number|string)
 {
@@ -34,7 +37,7 @@ function testBlur(productIndex: number|string)
 }
 
 // 定義15種品項的名稱和數量
-const itemQuantities = reactive([0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+const itemQuantities = reactive([13, 4, 4, 4, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
     inputRef = ref([]),
     itemNames = ref([
       // {code: 'A1', name: 'Taro Jingsa'},
@@ -63,6 +66,7 @@ const itemQuantities = reactive([0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       {code: 'F8', name: 'Black Gold'},
       {code: 'F9', name: 'Fruity Blueberry'},
     ]),
+    sequence = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2', 'A2', 'A3', 'A4', 'E1', 'E2', 'C1', 'D1']),
     // withYolk = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2']),
     // newFlavour = ref(['A2', 'A3', 'A4']),
     // pandanFlavour = ref(['E1', 'E2']),
@@ -71,11 +75,17 @@ const itemQuantities = reactive([0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
     boxCapacityOf2 = 2,
     itemsRemaining = ref<Array<any>>([]),
     boxes = ref<Array<any>>([]),
+    totalBox = ref<number>(0),
     totalItems = computed(() => itemQuantities.reduce((sum, qty) => sum + qty, 0));
 
 onMounted(() => {
   initial();
 });
+
+function getItemIdxByCode(code: string)
+{
+  return itemNames.value.findIndex((item) => item.code === code);
+}
 
 function initial()
 {
@@ -120,9 +130,72 @@ function initial()
       }
     });
   }else{
+    totalBox.value = Math.ceil(totalItems.value / boxCapacityOf4);
+    for(let i=0; i < totalBox.value; i++)
+    {
+      boxes.value.push([]);
+    }
+    console.log(totalBox.value, boxes.value, totalItems.value % boxCapacityOf4);
     itemsRemaining.value = [...itemQuantities];
-    boxes.value = distribute();
+    // boxes.value = distribute2();
   }
+}
+function distribute2()
+{
+  const retain = totalItems.value % boxCapacityOf4;
+  let boxArray: Array<any> = [], current = 0, itemToDistribute = [...itemQuantities];
+  do{
+    sequence.value.forEach((itemCode) => {
+      const itemIdx = getItemIdxByCode(itemCode);
+      do{
+        let currentIdx = current % totalBox.value;
+        if (boxArray[currentIdx] === undefined)
+          boxArray[currentIdx] = [];
+        if (boxArray[currentIdx].length >= boxCapacityOf4) {
+          current++;
+          continue;
+        }
+        if (boxArray[currentIdx].length < boxCapacityOf4) {
+          boxArray[currentIdx].push(itemIdx);
+          itemToDistribute[itemIdx]--;
+        }
+        current++;
+      }while(itemToDistribute[itemIdx] > 0)
+    });
+    for(let i = 0; i < boxes.value.length; i++)
+    {
+      if (boxArray[i] === undefined)
+        boxArray[i] = [];
+      for (let j = 0; j < itemToDistribute.length; j++) {
+        if (j === itemToDistribute.length - 1 && retain > 0 && boxArray[i].length >= retain) {
+          continue;
+        }
+        if (itemToDistribute[j] > 0 && boxArray[i].length < boxCapacityOf4) {
+          boxArray[i].push(j);
+          itemToDistribute[j]--;
+        }
+      }
+      if (boxArray[i].length >= boxCapacityOf4) {
+        boxArray[i].sort();
+      }
+    }
+
+
+
+    if (boxArray[current] === undefined)
+      boxArray[current] = [];
+    for (let j = 0; j < itemToDistribute.length; j++) {
+      if (itemToDistribute[j] > 0 && boxArray[current].length < boxCapacityOf4) {
+        boxArray[current].push(j);
+        itemToDistribute[j]--;
+      }
+    }
+    if (boxArray[current].length >= boxCapacityOf4) {
+      boxArray[current].sort();
+    }
+  }while(itemToDistribute.reduce((itemQuantities, val) => itemQuantities + val) > 0)
+
+  return boxArray;
 }
 
 function distribute()

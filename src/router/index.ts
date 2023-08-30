@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import { DefaultRoute } from "@/router/Modules/Default";
 import { getAppEnvConfig } from "@/service/Env";
 import Emitter from "@/service/Emitter";
@@ -14,13 +14,14 @@ Object.keys(modules).forEach((key) => {
 const constantRouter: any[] = [...DefaultRoute, ...routeModuleList],
     appEnv = getAppEnvConfig(),
     router = createRouter({
-        history: createWebHistory(import.meta.env.BASE_URL),
+        history: createWebHashHistory(import.meta.env.BASE_URL),
         routes: constantRouter,
         strict: true,
         scrollBehavior: () => ({ left: 0, top: 0 })
     });
 
 router.beforeEach((to, _from, next) => {
+    console.log("router.beforeEach")
     if (appEnv.MAINTENANCE && to.name !== "Misc/Maintenance")
         next({ name: "Misc/Maintenance" });
     else if (appEnv.COMING_SOON && to.name !== "Misc/ComingSoon")

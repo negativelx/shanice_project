@@ -19,8 +19,8 @@
     "tsx"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "dev": "vite -m localhost --port 5179",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
