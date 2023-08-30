@@ -207,13 +207,11 @@ function distribute()
       sequenceFirst = true;
       sequence.value.forEach((itemCode) => {
         const itemIdx = getItemIdxByCode(itemCode);
-        console.log(itemCode, itemIdx, itemToDistribute[itemIdx], itemToDistribute.length);
         do {
           if(itemToDistribute[itemIdx] <= 0)
             continue;
           const currentBoxIdx = current % totalBox.value;
           if (currentBoxIdx === boxArray.length - 1 && retain > 0 && boxArray[currentBoxIdx].length >= retain) {
-            console.log(boxArray[currentBoxIdx].length, boxArray[currentBoxIdx]);
             current++;
           } else {
             if (boxArray[currentBoxIdx] === undefined)
