@@ -6,27 +6,28 @@
   <!------------------------------->
   <div class="flex">
     <div class="w-3">
-      <h4>Product Input：</h4>
+      <h2>Product Input：</h2>
       <div class="flex m-1 w-full" v-for="productIndex of Object.keys(itemQuantities)">
-        <label class="w-8 mr-2"><span class="font-bold px-3">{{ itemNames[productIndex]['code'] }}</span> {{ itemNames[productIndex]['name'] }} : </label>
-        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem"
+        <label class="w-full mr-2"><span class="font-bold px-3">{{ itemNames[productIndex]['code'] }}</span> <span class="font-semibold">{{ itemNames[productIndex]['name'] }}</span> : </label>
+        <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem border-round-md border-black-alpha-30 "
                @focus="inputRef[productIndex].select();"
                ref="inputRef"
                @keyup.enter="initial"
+               tabindex="1"
               @blur="testBlur(productIndex)"/>
-        <div class="flex justify-content-end ml-4">
-          <input  readonly type="number" class="w-3rem bg-gray-100 " :value="itemDistributed[productIndex]"/>
-        </div>
+<!--        <div class="flex justify-content-end ml-4">-->
+<!--          <input  readonly type="number" class="w-3rem bg-gray-50 " :value="itemDistributed[productIndex]"/>-->
+<!--        </div>-->
       </div>
       <Divider />
-      <div class="flex  m-1 font-bold">
-        <label class="w-8 mr-3 text-right"><span class="font-bold">Total: </span> </label>
-        <input readonly type="number" class="w-3rem" :value="totalToDistribute"/>
-        <div class="flex justify-content-end ml-4">
-          <input readonly type="number" class="w-3rem bg-gray-100 " :value="totalDistributed"/>
-        </div>
+      <div class="flex m-1 mr-0 font-bold">
+        <label class="w-full mr-3 text-right"><span class="font-bold">Total: </span> </label>
+        <input readonly type="number" class="w-3rem select-none bg-indigo-50 border-round-md border-black-alpha-10" disabled :value="totalToDistribute"/>
+<!--        <div class="flex justify-content-end ml-4">-->
+<!--          <input readonly type="number" class="w-3rem bg-gray-50 " :value="totalDistributed" tabindex="0"/>-->
+<!--        </div>-->
       </div>
-      <div class="flex justify-content-center mt-4">
+      <div class="flex justify-content-end mt-4">
         <Button @click="initial">Distribute</Button>
       </div>
     </div>
@@ -40,8 +41,8 @@
     <!------------------------------------>
     <div class="ml-4 w-4">
       <h2>Distribute Result：</h2>
-      <div v-if="boxes.length > 0" class="text-2xl m-2" v-for="(box, index) in boxes" :key="index">
-        Box {{ index + 1 }} = <span class="font-bold">{{ getBoxItemsNames(box).join(', ') }} </span>
+      <div v-if="boxes.length > 0" class="text-2xl m-2 my-4 " v-for="(box, index) in boxes" :key="index">
+        <span class="font-semibold">Box {{ index + 1 }} = </span><span class="font-bold border-1 border-round p-1 px-2">{{ getBoxItemsNames(box).join(', ') }} </span>
       </div>
       <div v-else>
         <h3 class="text-2xl m-2 text-gray-500">-No Result-</h3>
@@ -57,8 +58,8 @@
     <div class="ml-4">
       <h2>Item Distributed：</h2>
       <div v-if="Object.keys(itemDistributed).length > 0" class="flex m-1" v-for="(count, index) in itemDistributed" :key="index">
-        <div class="w-3rem">{{ getItemNames(Number(index)) }}： </div>
-        <input readonly type="number" class="w-3rem" :value="count"/>
+        <div class="w-3rem font-bold">{{ getItemNames(Number(index)) }}： </div>
+        <input readonly disabled type="number" class="w-3rem bg-indigo-50 border-round-md border-black-alpha-10" :value="count"/>
       </div>
       <div v-else>
         <h3 class="text-2xl m-2 text-gray-500">-No Result-</h3>
@@ -66,7 +67,7 @@
       <Divider />
       <div class="flex m-1 font-bold">
         <span class="pr-2">Total:</span>
-        <input readonly type="number" class="w-3rem" :value="totalDistributed"/>
+        <input readonly disabled type="number" class="w-3rem bg-indigo-50 border-round-md border-black-alpha-10" :value="totalDistributed"/>
       </div>
     </div>
   </div>
@@ -115,10 +116,6 @@ const itemQuantities = reactive([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       {code: 'F9', name: 'Fruity Blueberry'},
     ]),
     sequence = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2', 'A2', 'A3', 'A4', 'E1', 'E2', 'C1', 'D1']),
-    // withYolk = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2']),
-    // newFlavour = ref(['A2', 'A3', 'A4']),
-    // pandanFlavour = ref(['E1', 'E2']),
-    // mixedNutFlavour = ref(['C1', 'D1']),
     totalToDistribute = computed(() => itemQuantities.reduce((itemQuantities, val) => itemQuantities + val)),
     boxCapacityOf4 = 4,
     boxCapacityOf2 = 2,
