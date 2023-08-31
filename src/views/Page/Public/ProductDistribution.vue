@@ -88,7 +88,6 @@
 import {computed, ref, reactive, onMounted} from 'vue';
 import Divider from "primevue/divider";
 import Button from "primevue/button";
-import Emitter from "@/service/Emitter";
 
 function testBlur(productIndex: number|string)
 {
@@ -180,7 +179,7 @@ function copyDistributed()
   let input = '';
   if (boxes.value.length === 0)
     return;
-  Object.keys(itemDistributed.value).forEach((itemIndex, index) => {
+  Object.keys(itemDistributed.value).forEach((itemIndex) => {
     input += `${getItemNames(Number(itemIndex))} (${getItemShortForm(Number(itemIndex))}) \t ${itemDistributed.value[itemIndex]}\n`;
   });
   navigator.clipboard.writeText(input)
@@ -310,7 +309,7 @@ function distribute()
 }
 
 // 根據箱子中的商品索引，返回商品的名稱
-const getBoxItemsNames = (box: number[]) => box.map((itemIndex) => itemNames.value[itemIndex]['code']);
+// const getBoxItemsNames = (box: number[]) => box.map((itemIndex) => itemNames.value[itemIndex]['code']);
 const getItemNames = (itemIndex: number) => itemNames.value[itemIndex]['code'];
 
 const getItemShortForm = (itemIndex: number) => itemNames.value[itemIndex]['shortForm'];
