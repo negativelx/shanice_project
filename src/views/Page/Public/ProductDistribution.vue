@@ -5,9 +5,9 @@
   <!--   Section Product Input   -->
   <!------------------------------->
   <div class="flex">
-    <div class="w-3">
+    <div class="w-3 w-25rem">
       <h2>Product Input：</h2>
-      <div class="flex m-1 w-full" v-for="productIndex of Object.keys(itemQuantities)">
+      <div class="flex m-1 w-full border-1 my-1 p-1 border-round" v-for="productIndex of Object.keys(itemQuantities)">
         <label class="w-full mr-2"><span class="font-bold px-3">{{ itemNames[productIndex]['code'] }}</span> <span class="font-semibold">{{ itemNames[productIndex]['name'] }}</span> : </label>
         <input v-model="itemQuantities[productIndex]" type="number" class="w-3rem border-round-md border-black-alpha-30 "
                @focus="inputRef[productIndex].select();"
@@ -40,9 +40,15 @@
     <!--   Section Distributed Result   -->
     <!------------------------------------>
     <div class="ml-4 w-4">
-      <h2>Distribute Result：</h2>
-      <div v-if="boxes.length > 0" class="text-2xl m-2 my-4 " v-for="(box, index) in boxes" :key="index">
-        <span class="font-semibold">Box {{ index + 1 }} = </span><span class="font-bold border-1 border-round p-1 px-2">{{ getBoxItemsNames(box).join(', ') }} </span>
+      <div class="flex justify-content-between">
+        <h2>Distribute Result：</h2>
+        <Button class="h-3rem" :disabled="boxes.length === 0" @click="copyResult">Copy</Button>
+      </div>
+      <div v-if="boxes.length > 0" class="flex text-xl m-2 my-4 w-full border-1 border-round p-1 px-2" v-for="(box, index) in boxes" :key="index">
+        <div class="flex font-semibold">Box {{ index + 1 }} = </div>
+        <div class="flex  font-bold w-10 ml-3" >
+          <div v-for="item of box" class="flex w-8rem">{{ getItemNames(Number(item)) }}({{getItemShortForm(Number(item))}})</div>
+        </div>
       </div>
       <div v-else>
         <h3 class="text-2xl m-2 text-gray-500">-No Result-</h3>
@@ -57,17 +63,21 @@
     <!---------------------------------->
     <div class="ml-4">
       <h2>Item Distributed：</h2>
-      <div v-if="Object.keys(itemDistributed).length > 0" class="flex m-1" v-for="(count, index) in itemDistributed" :key="index">
-        <div class="w-3rem font-bold">{{ getItemNames(Number(index)) }}： </div>
-        <input readonly disabled type="number" class="w-3rem bg-indigo-50 border-round-md border-black-alpha-10" :value="count"/>
+      <div class="flex justify-content-end">
+        <Button class="h-3rem" :disabled="boxes.length === 0" @click="copyDistributed">Copy</Button>
+      </div>
+      <div v-if="Object.keys(itemDistributed).length > 0" class="flex m-1 border-1 border-round m-2 p-1" v-for="(count, index) in itemDistributed" :key="index">
+        <div class="w-6 font-bold">{{ getItemNames(Number(index)) }}({{getItemShortForm(Number(index))}})： </div>
+        <div class="text-right">{{ count }}</div>
+<!--        <input readonly disabled type="number" class="w-3rem bg-indigo-50 border-round-md border-black-alpha-10" :value="count"/>-->
       </div>
       <div v-else>
         <h3 class="text-2xl m-2 text-gray-500">-No Result-</h3>
       </div>
       <Divider />
-      <div class="flex m-1 font-bold">
-        <span class="pr-2">Total:</span>
-        <input readonly disabled type="number" class="w-3rem bg-indigo-50 border-round-md border-black-alpha-10" :value="totalDistributed"/>
+      <div class="flex m-1 font-bold border-1 border-round m-2 p-1">
+        <span class="pr-2 w-6">Total:</span>
+        <div class="text-right">{{ totalDistributed }}</div>
       </div>
     </div>
   </div>
@@ -78,6 +88,7 @@
 import {computed, ref, reactive, onMounted} from 'vue';
 import Divider from "primevue/divider";
 import Button from "primevue/button";
+import Emitter from "@/service/Emitter";
 
 function testBlur(productIndex: number|string)
 {
@@ -89,22 +100,22 @@ function testBlur(productIndex: number|string)
 const itemQuantities = reactive([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
     inputRef = ref([]),
     itemNames = ref([
-      // {code: 'A1', name: 'Taro Jingsa'},
-      {code: 'A2', name: 'Green Ruby'},
-      {code: 'A3', name: 'Tiramisu'},
-      {code: 'A4', name: 'Taro Single Yolk'},
-      {code: 'B1', name: 'Pure Lotus'},
-      {code: 'B2', name: 'Pure Lotus Single Yolk'},
-      {code: 'B3', name: 'Pure Lotus Double Yolk'},
-      {code: 'B4', name: 'Low Sugar White Lotus'},
-      {code: 'B5', name: 'Low Sugar White Lotus 1 Yolk'},
-      {code: 'C1', name: 'Supreme Mixed Nuts'},
-      {code: 'C2', name: 'Precious Black'},
-      {code: 'D1', name: 'Mixed Nuts'},
-      {code: 'D2', name: 'Red Bean'},
-      {code: 'D3', name: 'Pearl of Harmony'},
-      {code: 'E1', name: 'Pandan Lotus'},
-      {code: 'E2', name: 'Pearl of Prosperity'},
+      // {code: 'A1', name: 'Taro Jingsa', shortForm: 'TJ'},
+      {code: 'A2', name: 'Green Ruby', shortForm: 'GR'},
+      {code: 'A3', name: 'Tiramisu', shortForm: 'TU'},
+      {code: 'A4', name: 'Taro Single Yolk', shortForm: 'TSY'},
+      {code: 'B1', name: 'Pure Lotus', shortForm: 'PL'},
+      {code: 'B2', name: 'Pure Lotus Single Yolk', shortForm: 'PLSY'},
+      {code: 'B3', name: 'Pure Lotus Double Yolk', shortForm: 'PLDY'},
+      {code: 'B4', name: 'Low Sugar White Lotus', shortForm: 'LSWL'},
+      {code: 'B5', name: 'Low Sugar White Lotus 1 Yolk', shortForm: 'LSWLSY'},
+      {code: 'C1', name: 'Supreme Mixed Nuts', shortForm: 'SMN'},
+      {code: 'C2', name: 'Precious Black', shortForm: 'PB'},
+      {code: 'D1', name: 'Mixed Nuts', shortForm: 'MN'},
+      {code: 'D2', name: 'Red Bean', shortForm: 'RB'},
+      {code: 'D3', name: 'Pearl of Harmony', shortForm: 'POH'},
+      {code: 'E1', name: 'Pandan Lotus', shortForm: 'PN'},
+      {code: 'E2', name: 'Pearl of Prosperity', shortForm: 'POP'},
       {code: 'F1', name: 'Snow Skin Low Sugar White Lotus Single Yolk'},
       {code: 'F2', name: 'Snow Skin Signature Yam'},
       {code: 'F3', name: 'Snow Skin Strawberry'},
@@ -115,7 +126,7 @@ const itemQuantities = reactive([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       {code: 'F8', name: 'Black Gold'},
       {code: 'F9', name: 'Fruity Blueberry'},
     ]),
-    sequence = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2', 'A2', 'A3', 'A4', 'E1', 'E2', 'C1', 'D1']),
+    sequence = ref(['B3', 'B2', 'B5', 'A4', 'D3', 'E2', 'A2', 'A3', 'A4', 'E1', 'C1', 'D1']),
     totalToDistribute = computed(() => itemQuantities.reduce((itemQuantities, val) => itemQuantities + val)),
     boxCapacityOf4 = 4,
     boxCapacityOf2 = 2,
@@ -139,6 +150,46 @@ onMounted(() => {
 function getItemIdxByCode(code: string)
 {
   return itemNames.value.findIndex((item) => item.code === code);
+}
+
+function copyResult()
+{
+  let input = '';
+  if (boxes.value.length === 0)
+    return;
+  boxes.value.forEach((box: Array<any>, index) => {
+    input += `Box ${index + 1} \t `;
+    box.forEach((itemIndex, idx) => {
+      input += `${getItemNames(itemIndex)} (${getItemShortForm(itemIndex)})`;
+      if (idx !== box.length - 1)
+        input += `\t`;
+    });
+    input += `\n`;
+  });
+  navigator.clipboard.writeText(input)
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('复制失败：', error);
+      });
+
+}
+
+function copyDistributed()
+{
+  let input = '';
+  if (boxes.value.length === 0)
+    return;
+  Object.keys(itemDistributed.value).forEach((itemIndex, index) => {
+    input += `${getItemNames(Number(itemIndex))} (${getItemShortForm(Number(itemIndex))}) \t ${itemDistributed.value[itemIndex]}\n`;
+  });
+  navigator.clipboard.writeText(input)
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('复制失败：', error);
+      });
+
 }
 
 function initial()
@@ -261,6 +312,8 @@ function distribute()
 // 根據箱子中的商品索引，返回商品的名稱
 const getBoxItemsNames = (box: number[]) => box.map((itemIndex) => itemNames.value[itemIndex]['code']);
 const getItemNames = (itemIndex: number) => itemNames.value[itemIndex]['code'];
+
+const getItemShortForm = (itemIndex: number) => itemNames.value[itemIndex]['shortForm'];
 
 </script>
 
